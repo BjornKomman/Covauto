@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace Covauto.Domain.Data
 {
