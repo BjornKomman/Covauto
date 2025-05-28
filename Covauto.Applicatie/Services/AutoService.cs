@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Covauto.Application.Interfaces;
+using Covauto.Applicatie.DTO.Auto;
+using Covauto.Applicatie.Interfaces;
+
 using Covauto.Shared.DTO.Auto;
 
 namespace Covauto.Application.Services
@@ -19,7 +21,7 @@ namespace Covauto.Application.Services
 
         public async Task<int> CreateAutoAsync(CreateAuto auto)
         {
-            return await AutosRepository.CreateBoekAsync(auto);
+            return await AutosRepository.CreateAutoAsync(auto);
         }
 
         public async Task DeleteAutoAsync(int id)

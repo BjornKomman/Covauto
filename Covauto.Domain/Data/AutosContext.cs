@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -32,6 +32,7 @@ namespace Covauto.Domain.Data
                 startAdres = "Koeweide",
                 eindAdres = "alweer koeweide",
                 beschikbaarheid = true,
+                publicatieJaar = 2025
             });
             modelBuilder.Entity<Auto>().HasData(new Auto
             {
@@ -42,6 +43,7 @@ namespace Covauto.Domain.Data
                 startAdres = "Schaapweide",
                 eindAdres = "alweer Schaapweide",
                 beschikbaarheid = true,
+                publicatieJaar = 2025
             });
         }
     }

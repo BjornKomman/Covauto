@@ -1,5 +1,5 @@
-﻿using Covauto.Application.Interfaces;
-using Covauto.Shared.DTO.Boeken;
+﻿using Covauto.Applicatie.DTO.Auto;
+using Covauto.Applicatie.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,37 +9,38 @@ namespace Covauto.API.Controllers;
 [ApiController]
 public class AutosController : ControllerBase
 {
-    private readonly IBoekenService boekenService;
+    private readonly IAutoService autoService;
 
-    public AutosController(IBoekenService boekenService)
+    public AutosController(IAutoService autoService)
     {
-        this.boekenService = boekenService;
+        this.autoService = autoService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GeefBoeken()
+    public async Task<IActionResult> GeefAutos()
     {
-        return Ok(await boekenService.GeefAlleBoekenAsync());
+        return Ok(await autoService.GeefAlleAutosAsync());
     }
 
-    [HttpGet("search/{titel}")]
-    public async Task<IActionResult> ZoekBoeken(string titel)
+    [HttpGet("search/{naam}")]
+    public async Task<IActionResult> ZoekAutos(string naam)
     {
-        return Ok(await boekenService.ZoekBoekenAsync(titel));
+        return Ok(await autoService.ZoekAutosAsync(naam));
     }
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> GeefBoek(int id)
+    public async Task<IActionResult> GeefAuto(int id)
     {
-        FullBoek? retVal = await boekenService.GeefBoekAsync(id);
+        FullAuto? retVal = await autoService.GeefAutoAsync(id);
         return retVal != null ? Ok(retVal) : NotFound();
     }
 
     [HttpPost]
-    public async Task<IActionResult> MaakBoek(CreateBoek boek)
+    public async Task<IActionResult> MaakAuto(CreateAuto auto)
     {
         try
         {
-            var id = await boekenService.CreateBoekAsync(boek);
+            var id = await autoService.CreateAutoAsync(auto);
 
             return Ok(id);
         }
@@ -47,15 +48,14 @@ public class AutosController : ControllerBase
         {
             return BadRequest(ex.Message);
         }
-
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateBoek(int id, UpdateBoek boek)
+    public async Task<IActionResult> UpdateAuto(int id, UpdateAuto auto)
     {
         try
         {
-            await boekenService.UpdateBoekAsync(id, boek);
+            await autoService.UpdateAutoAsync(id, auto);
             return Ok();
         }
         catch (ValidationException ex)
@@ -68,12 +68,12 @@ public class AutosController : ControllerBase
         }
     }
 
-    [HttpDelete("id")]
-    public async Task<IActionResult> DeleteBoek(int id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAuto(int id)
     {
         try
         {
-            await boekenService.DeleteBoekAsync(id);
+            await autoService.DeleteAutoAsync(id);
             return Ok();
         }
         catch (Exception ex)
