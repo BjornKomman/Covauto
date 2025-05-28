@@ -31,7 +31,7 @@ public class AutosController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GeefAuto(int id)
     {
-        FullAuto? retVal = await autoService.GeefAutoAsync(id);
+        Shared.DTO.Auto.FullAuto? retVal = await autoService.GeefAutoAsync(id);
         return retVal != null ? Ok(retVal) : NotFound();
     }
 
@@ -53,6 +53,11 @@ public class AutosController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAuto(int id, UpdateAuto auto)
     {
+        if (auto is null)
+        {
+            throw new ArgumentNullException(nameof(auto));
+        }
+
         try
         {
             await autoService.UpdateAutoAsync(id, auto);
