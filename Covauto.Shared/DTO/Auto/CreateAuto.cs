@@ -29,6 +29,8 @@ namespace Covauto.Applicatie.DTO.Auto
         [Required]
         [JsonPropertyName("beschikbaarheid")]
         public bool beschikbaarheid { get; set; }
+        public int publicatieJaar {  get; set; }
+
 
         [JsonPropertyName("GebruikerId")]
         public int GebruikerId { get; set; }

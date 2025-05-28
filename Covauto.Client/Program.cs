@@ -1,36 +1,39 @@
-﻿using Covauto.Shared.DTO.Boeken;
-using Covauto.Shared.DTO.Schrijvers;
+﻿using Covauto.Applicatie.DTO.Auto;
+using Covauto.Applicatie.DTO.Gebruiker;
+
 using System.Net.Http.Json;
 
 namespace Covauto.Client
 {
-    internal class Program
+    public class Program
     {
         static string baseUrl = "https://localhost:7190/api";
+
         static async Task Main(string[] args)
         {
             await PrintAutos();
             int gebruikerId = await MaakGebruiker();
             await MaakAuto(gebruikerId);
-            //await PrintAutos();
 
             Console.WriteLine("*****Done*****");
             Console.ReadLine();
-
         }
 
         private static async Task MaakAuto(int gebruikerId)
         {
             var newAuto = new CreateAuto
             {
-                Titel = "Hoe schrijf ik een API in c#",
-                SchrijverId = gebruikerId,
-                Publicatiejaar = DateTime.Now.Year
+                naamAuto = "Volkswagen Golf",
+                kilometerstand = 123456,
+                startAdres = "Stationsstraat 1, Utrecht",
+                eindAdres = "Marktplein 5, Amsterdam",
+                beschikbaarheid = true,
+                GebruikerId = gebruikerId
             };
 
             var autoId = await CreateAutoAsync(newAuto);
             Console.WriteLine("------Auto-----");
-            Console.WriteLine($"Created Auto with ID: {autoId}");
+            Console.WriteLine($"Gemaakte Auto met ID: {autoId}");
         }
 
         private static async Task<int> MaakGebruiker()
@@ -40,9 +43,9 @@ namespace Covauto.Client
                 Naam = "Appi de Gebruiker"
             };
 
-            var gebruikerId = await CreateSchrijverAsync(newGebruiker);
+            var gebruikerId = await CreateGebruikerAsync(newGebruiker);
             Console.WriteLine("------Gebruiker-----");
-            Console.WriteLine($"Created Gebruiker with ID: {gebruikerId}");
+            Console.WriteLine($"Gemaakte Gebruiker met ID: {gebruikerId}");
             return gebruikerId;
         }
 
@@ -52,16 +55,14 @@ namespace Covauto.Client
             Console.WriteLine("------Alle Autos-----");
             foreach (var auto in autos)
             {
-                Console.WriteLine($"Id: {auto.ID}, Naam: {auto.Titel}, Chauffeur: {auto.Gebruiker}");
+                Console.WriteLine($"Id: {auto.Id}, Naam: {auto.naamAuto}, KM-stand: {auto.kilometerstand}, Van: {auto.startAdres}, Naar: {auto.eindAdres}, Beschikbaar: {auto.beschikbaarheid}");
             }
-
-
         }
 
         private static async Task<int> CreateGebruikerAsync(CreateGebruiker newGebruiker)
         {
             using var client = new HttpClient();
-            client.BaseAddress = new Uri($"{baseUrl}/Gebruikers"); // Adjust the base address as needed
+            client.BaseAddress = new Uri($"{baseUrl}/Gebruikers");
 
             var response = await client.PostAsJsonAsync("", newGebruiker);
             response.EnsureSuccessStatusCode();
@@ -73,7 +74,7 @@ namespace Covauto.Client
         private static async Task<int> CreateAutoAsync(CreateAuto newAuto)
         {
             using var client = new HttpClient();
-            client.BaseAddress = new Uri($"{baseUrl}/Autos"); // Adjust the base address as needed
+            client.BaseAddress = new Uri($"{baseUrl}/Autos");
 
             var response = await client.PostAsJsonAsync("", newAuto);
             response.EnsureSuccessStatusCode();
@@ -81,21 +82,18 @@ namespace Covauto.Client
             var createdAutoId = await response.Content.ReadFromJsonAsync<int>();
             return createdAutoId;
         }
-        private static async Task<IEnumerable<AutosListItem>> GetAutosAsync()
+
+        private static async Task<IEnumerable<AutoListItem>> GetAutosAsync()
         {
             using var client = new HttpClient();
-            client.BaseAddress = new Uri($"{baseUrl}/auto");
+            client.BaseAddress = new Uri($"{baseUrl}/Autos");
 
-            //Voer de werkelijke Get uit
             var response = await client.GetAsync("");
             if (!response.IsSuccessStatusCode)
-                //geef een lege lijst terug(er is iets fout gegaan
-                return Enumerable.Empty<AutosListItem>();
+                return Enumerable.Empty<AutoListItem>();
 
-            //zet de json om in een lijst van BoekListItem
-            var boeken = await response.Content.ReadFromJsonAsync<IEnumerable<AutosListItem>>();
-            //geef de boeken terug als die er zijn, anders geef je een lege lijst
-            return boeken ?? Enumerable.Empty<AutosListItem>();
+            var autos = await response.Content.ReadFromJsonAsync<IEnumerable<AutoListItem>>();
+            return autos ?? Enumerable.Empty<AutoListItem>();
         }
     }
 }

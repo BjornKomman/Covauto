@@ -1,5 +1,6 @@
-﻿using Covauto.Application.Interfaces;
-using Covauto.Shared.DTO.Schrijvers;
+﻿
+using Covauto.Applicatie.DTO.Gebruiker;
+using Covauto.Applicatie.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Covauto.API.Controllers
@@ -8,34 +9,34 @@ namespace Covauto.API.Controllers
     [ApiController]
     public class GebruikersController : ControllerBase
     {
-        private readonly ISchrijverService schrijverService;
+        private readonly IGebruikerService gebruikerService;
 
-        public GebruikersController(ISchrijverService schrijverService)
+        public GebruikersController(IGebruikerService gebruikerService)
         {
-            this.schrijverService = schrijverService;
+            this.gebruikerService = gebruikerService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GeefSchrijvers()
+        public async Task<IActionResult> GeefGebruikers()
         {
-            return Ok(await schrijverService.GeefAlleSchrijversAsync());
+            return Ok(await gebruikerService.GeefAlleGebruikersAsync());
         }
         [HttpGet("search/{naam}")]
-        public async Task<IActionResult> ZoekSchrijvers(string naam)
+        public async Task<IActionResult> ZoekGebruikers(string naam)
         {
-            return Ok(await schrijverService.ZoekSchrijversAsync(naam));
+            return Ok(await gebruikerService.ZoekGebruikersAsync(naam));
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GeefSchrijver(int id)
+        public async Task<IActionResult> GeefGebruiker(int id)
         {
-            var retVal = await schrijverService.GeefSchrijverByIdAsync(id);
+            var retVal = await gebruikerService.GeefGebruikerByIdAsync(id);
             return retVal != null ? Ok(retVal) : NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> MaakSchrijver(CreateSchrijver schrijver)
+        public async Task<IActionResult> MaakGebruiker(CreateGebruiker schrijver)
         {
-            return Ok(await schrijverService.MaakSchrijverAsync(schrijver));
+            return Ok(await gebruikerService.MaakGebruikerAsync(schrijver));
         }
     }
 }

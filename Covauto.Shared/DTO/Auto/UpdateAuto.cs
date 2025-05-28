@@ -36,3 +36,4 @@ namespace Covauto.Applicatie.DTO.Auto
         [JsonPropertyName("GebruikerId")]
         public int GebruikerId { get; set; }
     }
+}

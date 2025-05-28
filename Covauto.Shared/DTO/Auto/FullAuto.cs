@@ -36,5 +36,6 @@ namespace Covauto.Shared.DTO.Auto
 
         [JsonPropertyName("GebruikerId")]
         public int GebruikerId { get; set; }
+        public object Publicatiejaar { get; set; }
     }
 }

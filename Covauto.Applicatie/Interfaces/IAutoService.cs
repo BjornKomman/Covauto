@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Covauto.Applicatie.DTO.Auto;
 using Covauto.Shared.DTO.Auto;
 
 namespace Covauto.Applicatie.Interfaces
@@ -13,7 +9,7 @@ namespace Covauto.Applicatie.Interfaces
         Task<IEnumerable<AutoListItem>> ZoekAutosAsync(string naamAuto);
         Task<FullAuto?> GeefAutoAsync(int id);
         Task<int> CreateAutoAsync(CreateAuto auto);
-        Task UpdateAutoAsync(int id, UpdateAuto auto);
+        Task UpdateAutoAsync(int id);
         Task DeleteAutoAsync(int id);
     }
 }

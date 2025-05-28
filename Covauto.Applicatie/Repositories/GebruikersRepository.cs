@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Covauto.Applicatie.DTO.Gebruiker;
+using Covauto.Domain.Data;
+using Covauto.Domain.Entities;
+using Covauto.Shared.DTO.Gebruiker;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Covauto.Application.Repositories
 {
     public class GebruikersRepository
     {
-        private readonly CovautoContext covautoContext;
+        private readonly AutosContext autosContext;
+        private readonly DbSet<Gebruiker> gebruikerEntity;
 
-        public GebruikersRepository(CovautoContext covautoContext)
+        public GebruikersRepository(AutosContext autosContext)
         {
-            this.covautoContext = covautoContext;
+            this.autosContext = autosContext;
         }
 
         /// <summary>
@@ -22,12 +24,16 @@ namespace Covauto.Application.Repositories
         /// <returns>GebruikerId</returns>
         public int MaakGebruiker(CreateGebruiker gebruiker)
         {
-            Domain.Entities.Gebruiker gebruikerEntity = new Domain.Entities.Gebruiker()
+            Gebruiker gebruikerEntity = new Gebruiker()
             {
                 Naam = gebruiker.Naam
             };
-            covautoContext.Schrijvers.Add(gebruikerEntity);
-            covautoContext.SaveChanges();
+
+
+
+
+            autosContext.Gebruikers.Add(gebruikerEntity);
+            autosContext.SaveChanges();
             return gebruikerEntity.Id;
         }
 
@@ -35,10 +41,10 @@ namespace Covauto.Application.Repositories
         /// Geeft alle Gebruikers namen uit de database met daarbij de id
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<GebruikerItem> GeefAlleGebruikers()
+        public IEnumerable<GebruikerListItem> GeefAlleGebruikers()
         {
-            return covautoContext.Gebruikers.Select(
-                n => new GebruikerItem()
+            return autosContext.Gebruikers.Select(
+                n => new GebruikerListItem()
                 {
                     Id = n.Id,
                     Naam = n.Naam
@@ -51,11 +57,22 @@ namespace Covauto.Application.Repositories
         /// </summary>
         /// <param name="naam"></param>
         /// <returns>Lijst van Gebruikers met daarbij behorende Ids</returns>
-        public IEnumerable<GebruikerItem> ZoekSchrijvers(string naam)
+        public IEnumerable<GebruikerListItem> ZoekGebruikers(string naam)
         {
-            return covautoContext.Gebruikers.Where(
+            return autosContext.Gebruikers.Where(
                 n => n.Naam.ToLower().Contains(naam.ToLower()))
-                .Select(n => new GebruikerItem()
+                .Select(n => new GebruikerListItem()
+                {
+                    Id = n.Id,
+                    Naam = n.Naam
+                });
+        }
+
+        public IEnumerable<GebruikerListItem> ZoekGebruikersAsyncs(string naam)
+        {
+            return autosContext.Gebruikers.Where(
+                n => n.Naam.ToLower().Contains(naam.ToLower()))
+                .Select(n => new GebruikerListItem()
                 {
                     Id = n.Id,
                     Naam = n.Naam
@@ -69,11 +86,11 @@ namespace Covauto.Application.Repositories
         /// <returns></returns>
         public Gebruiker? GeefGebruikerById(int id)
         {
-            return MapSchrijver(covautoContext.Gebruikers.Include(n => n.Autos).SingleOrDefault(n => n.Id == id));
+            return MapGebruiker(autosContext.Gebruikers.Include(n => n.Autos).SingleOrDefault(n => n.Id == id));
         }
 
 
-        private Gebruiker? MapSchrijver(Domain.Entities.Gebruiker? gebruiker)
+        private Gebruiker? MapGebruiker(Domain.Entities.Gebruiker? gebruiker)
         {
             if (gebruiker == null)
                 return null;
@@ -84,5 +101,7 @@ namespace Covauto.Application.Repositories
                 Naam = gebruiker.Naam,
             };
         }
+
+
     }
 }

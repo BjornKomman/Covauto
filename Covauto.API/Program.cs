@@ -1,6 +1,6 @@
 
-using Covauto.API.Repositories;
 using Covauto.Domain;
+using Microsoft.IdentityModel.Configuration;
 namespace Covauto.API
 {
     public class Program
@@ -9,17 +9,17 @@ namespace Covauto.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            ServiceConfiguration.RegisterServices(builder.Services, builder.Configuration.GetConnectionString("DefaultConnection"));
+            // Add services to the container.  
+            RegisterServices(builder.Services, builder.Configuration.GetConnectionString("DefaultConnection"));
             builder.Services.AddControllers();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle  
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Configure the HTTP request pipeline.  
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -30,10 +30,16 @@ namespace Covauto.API
 
             app.UseAuthorization();
 
-
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static void RegisterServices(IServiceCollection services, string connectionString)
+        {
+            // Implement the logic to register services here.  
+            // Example:  
+            // services.AddDbContext<MyDbContext>(options => options.UseSqlServer(connectionString));  
         }
     }
 }

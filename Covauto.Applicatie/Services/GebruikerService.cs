@@ -1,10 +1,8 @@
 ﻿using Covauto.Applicatie.DTO.Gebruiker;
 using Covauto.Applicatie.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Covauto.Shared.DTO.Gebruiker;
+
+
 
 namespace Covauto.Application.Services
 {
@@ -21,7 +19,7 @@ namespace Covauto.Application.Services
             return await gebruikerRepository.GeefAlleGebruikersAsync();
         }
 
-        public async Task<GebruikerDTO?> GeefGebruikerByIdAsync(int id)
+        public async Task<GebruikerListItem?> GeefGebruikerByIdAsync(int id)
         {
             return await gebruikerRepository.GeefGebruikerByIdAsync(id);
         }
@@ -34,6 +32,11 @@ namespace Covauto.Application.Services
         public async Task<IEnumerable<GebruikerListItem>> ZoekGebruikerAsync(string naam)
         {
             return await gebruikerRepository.ZoekGebruikersAsync(naam);
+        }
+
+        public Task<IEnumerable<GebruikerListItem>> ZoekGebruikersAsync(string naam)
+        {
+            throw new NotImplementedException();
         }
     }
 }

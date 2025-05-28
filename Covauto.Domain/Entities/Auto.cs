@@ -14,6 +14,7 @@ namespace Covauto.Domain.Entities
         public string startAdres { get; set;}
         public string eindAdres { get; set; }
         public bool beschikbaarheid { get; set;}
+        public int publicatieJaar { get; set; }
         public int GebruikerId { get; set; }
         public virtual Gebruiker? Gebruiker { get; set; }
     }
