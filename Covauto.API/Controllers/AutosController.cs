@@ -51,16 +51,13 @@ public class AutosController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAuto(int id, UpdateAuto auto)
+    public async Task<IActionResult> UpdateAuto(int id)
     {
-        if (auto is null)
-        {
-            throw new ArgumentNullException(nameof(auto));
-        }
+        
 
         try
         {
-            await autoService.UpdateAutoAsync(id, auto);
+            await autoService.UpdateAutoAsync(id);
             return Ok();
         }
         catch (ValidationException ex)

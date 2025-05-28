@@ -9,7 +9,7 @@ namespace Covauto.Applicatie.Interfaces
         Task<IEnumerable<AutoListItem>> ZoekAutosAsync(string naamAuto);
         Task<FullAuto?> GeefAutoAsync(int id);
         Task<int> CreateAutoAsync(CreateAuto auto);
-        Task UpdateAutoAsync(int id, UpdateAuto auto);
+        Task UpdateAutoAsync(int id);
         Task DeleteAutoAsync(int id);
     }
 }

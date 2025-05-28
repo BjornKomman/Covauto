@@ -48,5 +48,10 @@ namespace Covauto.Application.Services
         {
             return await AutosRepository.ZoekAutosAsync(naamAuto);
         }
+
+        Task IAutoService.UpdateAutoAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
