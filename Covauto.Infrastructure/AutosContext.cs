@@ -6,15 +6,27 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using Covauto.Domain;
+using Microsoft.EntityFrameworkCore;
 
-namespace Covauto.Domain.Data
+
+
+
+namespace Covauto.Infrastructure.Data
 {
     public class AutosContext : DbContext
     {
         public AutosContext(DbContextOptions<AutosContext> options) : base(options) { }
 
-        public DbSet<Gebruiker> Gebruikers { get; set; }
+        public Auto Auto { get; set; }
+        public Gebruiker Gebruiker { get; set; }
+
         public DbSet<Auto> Autos { get; set; }
+        public DbSet<Gebruiker> Gebruikers { get; set; }
+        public DbSet<Rit> Ritten { get; set; }
+
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

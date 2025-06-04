@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Covauto.Applicatie.Interfaces;
-using Covauto.Domain.Data;
 using Covauto.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using static Covauto.Applicatie.Repositories.AutosRepository;
 using Covauto.Applicatie.DTO.Auto;
 using Covauto.Shared.DTO.Auto;
+using Covauto.Infrastructure.Data;
 
 namespace Covauto.Applicatie.Repositories
 {
