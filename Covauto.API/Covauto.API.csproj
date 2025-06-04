@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Covauto.Applicatie\Covauto.Application.csproj" />
     <ProjectReference Include="..\Covauto.Domain\Covauto.Domain.csproj" />
+    <ProjectReference Include="..\Covauto.Infrastructure\Covauto.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

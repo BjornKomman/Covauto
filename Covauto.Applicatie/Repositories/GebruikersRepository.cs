@@ -1,11 +1,12 @@
 ﻿using Covauto.Applicatie.DTO.Gebruiker;
-using Covauto.Domain.Data;
+using Covauto.Infrastructure;
 using Covauto.Domain.Entities;
 using Covauto.Shared.DTO.Gebruiker;
 using Microsoft.EntityFrameworkCore;
+using Covauto.Infrastructure.Data;
 
 
-namespace Covauto.Application.Repositories
+namespace Covauto.Infrastructure
 {
     public class GebruikersRepository
     {

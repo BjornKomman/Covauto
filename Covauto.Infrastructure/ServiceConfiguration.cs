@@ -1,13 +1,16 @@
-﻿using Covauto.Domain.Data;
+﻿using Covauto.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Covauto.Domain
+namespace Covauto.Infrastructure
 {
     public static class ServicesConfiguration
     {
         public static void RegisterServices(IServiceCollection services, string connectionString)
         {
-            services.AddSqlite<AutosContext>(connectionString);
+            services.AddDbContext<AutosContext>(options =>
+                options.UseSqlite(connectionString));
         }
     }
 }
