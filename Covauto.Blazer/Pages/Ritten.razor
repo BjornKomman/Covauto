@@ -1,0 +1,132 @@
+﻿@page "/ritten"
+@using Microsoft.AspNetCore.Components.Forms
+@inject RittenRepository RittenRepo
+@inject AutosRepository.AutoRepository AutoRepo 
+@inject GebruikersRepository GebruikerRepo  
+
+<h3>Nieuwe Rit Toevoegen</h3>
+
+<EditForm Model="@nieuweRit" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="auto">Auto:</label>
+        <select @bind="nieuweRit.AutoId" class="form-select" @onchange="LaadBeginKmStand">
+            <option value="">-- Kies een auto --</option>
+            @foreach (var auto in autos)
+            {
+                <option value="@auto.Id">@auto.naamAuto</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="gebruiker">Gebruiker:</label>
+        <select @bind="nieuweRit.GebruikerId" class="form-select">
+            <option value="">-- Kies een gebruiker --</option>
+            @foreach (var gebruiker in gebruikers)
+            {
+                <option value="@gebruiker.Id">@gebruiker.Naam</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Beginadres:</label>
+        <InputText class="form-control" @bind-Value="nieuweRit.BeginAdres" />
+    </div>
+
+    <div class="mb-3">
+        <label>Eindadres:</label>
+        <InputText class="form-control" @bind-Value="nieuweRit.EindAdres" />
+    </div>
+
+    <div class="mb-3">
+        <label>Beginkilometerstand:</label>
+        <InputText class="form-control" @bind-Value="nieuweRit.BeginKmStand" Disabled />
+    </div>
+
+    <div class="mb-3">
+        <label>Eindkilometerstand:</label>
+        <InputNumber class="form-control" @bind-Value="nieuweRit.EindKmStand" />
+    </div>
+
+    <div class="mb-3">
+        <label>Datum:</label>
+        <InputDate @bind-Value="nieuweRit.Datum" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Opslaan</button>
+</EditForm>
+
+<hr />
+
+<h3>Alle Ritten</h3>
+
+@if (ritten == null)
+{
+    <p>Laden...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Auto</th>
+                <th>Gebruiker</th>
+                <th>BeginAdres</th>
+                <th>EindAdres</th>
+                <th>Kilometerstand</th>
+                <th>Datum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var rit in ritten)
+            {
+                <tr>
+                    <td>@rit.AutoId</td>
+                    <td>@rit.GebruikerId</td>
+                    <td>@rit.BeginAdres</td>
+                    <td>@rit.EindAdres</td>
+                    <td>@rit.BeginKmStand - @rit.EindKmStand</td>
+                    <td>@rit.Datum.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private CreateRit nieuweRit = new();
+    private List<RitListItem>? ritten;
+    private List<AutoListItem> autos = new();
+    private List<GebruikerListItem> gebruikers = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
+        autos = (await AutoRepo.GeefAlleAutosAsync()).ToList();
+        gebruikers = GebruikerRepo.GeefAlleGebruikers().ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await RittenRepo.CreateRitAsync(nieuweRit);
+        ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
+        nieuweRit = new(); // reset form
+        StateHasChanged();
+    }
+
+    private async Task LaadBeginKmStand(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int autoId))
+        {
+            var auto = await AutoRepo.GeefAuto(autoId);
+            if (auto != null)
+            {
+                nieuweRit.BeginKmStand = auto.kilometerstand;
+            }
+        }
+    }
+}
