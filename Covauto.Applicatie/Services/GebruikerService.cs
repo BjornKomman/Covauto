@@ -1,5 +1,6 @@
 ﻿using Covauto.Applicatie.DTO.Gebruiker;
 using Covauto.Applicatie.Interfaces;
+using Covauto.Application.Repositories;
 using Covauto.Shared.DTO.Gebruiker;
 
 

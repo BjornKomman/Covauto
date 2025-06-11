@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Covauto.Applicatie.DTO.Gebruiker;
 using Covauto.Domain.Entities;
 
-namespace Covauto.Applicatie.Interfaces
+namespace Covauto.Application.Repositories
 {
     public interface IGebruikerRepository
     {
@@ -14,6 +14,6 @@ namespace Covauto.Applicatie.Interfaces
         Task<IEnumerable<GebruikerListItem>> GeefAlleGebruikersAsync();
         Task<IEnumerable<GebruikerListItem>> ZoekGebruikersAsync(string naam);
         Task<GebruikerListItem> GeefGebruikerByIdAsync(int id);
-       
+
     }
 }

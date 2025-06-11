@@ -12,9 +12,9 @@ namespace Covauto.Application.Services
 {
     public class AutoService : IAutoService
     {
-        private readonly IAutosRepository AutosRepository;
+        private readonly IAutoRepository AutosRepository;
 
-        public AutoService(IAutosRepository autosRepository)
+        public AutoService(IAutoRepository autosRepository)
         {
             this.AutosRepository = autosRepository;
         }

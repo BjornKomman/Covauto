@@ -1,8 +1,19 @@
 ﻿@page "/ritten"
 @using Microsoft.AspNetCore.Components.Forms
+<<<<<<< Updated upstream
 @inject RittenRepository RittenRepo
 @inject AutosRepository.AutoRepository AutoRepo 
 @inject GebruikersRepository GebruikerRepo  
+=======
+@using Covauto.Shared.DTO.Rit
+@using Covauto.Shared.DTO.Auto
+@using Covauto.Shared.DTO.Gebruiker
+@using Covauto.Application.Repositories
+
+@inject IRittenRepository RittenRepo
+@inject IAutoRepository AutoRepo
+@inject IGebruikerRepository GebruikerRepo
+>>>>>>> Stashed changes
 
 <h3>Nieuwe Rit Toevoegen</h3>
 
@@ -11,7 +22,7 @@
     <ValidationSummary />
 
     <div class="mb-3">
-        <label for="auto">Auto:</label>
+        <label>Auto:</label>
         <select @bind="nieuweRit.AutoId" class="form-select" @onchange="LaadBeginKmStand">
             <option value="">-- Kies een auto --</option>
             @foreach (var auto in autos)
@@ -22,7 +33,7 @@
     </div>
 
     <div class="mb-3">
-        <label for="gebruiker">Gebruiker:</label>
+        <label>Gebruiker:</label>
         <select @bind="nieuweRit.GebruikerId" class="form-select">
             <option value="">-- Kies een gebruiker --</option>
             @foreach (var gebruiker in gebruikers)
@@ -44,7 +55,7 @@
 
     <div class="mb-3">
         <label>Beginkilometerstand:</label>
-        <InputText class="form-control" @bind-Value="nieuweRit.BeginKmStand" Disabled />
+        <InputNumber class="form-control" @bind-Value="nieuweRit.BeginKmStand" Disabled />
     </div>
 
     <div class="mb-3">
@@ -85,8 +96,8 @@ else
             @foreach (var rit in ritten)
             {
                 <tr>
-                    <td>@rit.AutoId</td>
-                    <td>@rit.GebruikerId</td>
+                    <td>@rit.AutoNaam</td>
+                    <td>@rit.GebruikerNaam</td>
                     <td>@rit.BeginAdres</td>
                     <td>@rit.EindAdres</td>
                     <td>@rit.BeginKmStand - @rit.EindKmStand</td>
@@ -99,7 +110,7 @@ else
 
 @code {
     private CreateRit nieuweRit = new();
-    private List<RitListItem>? ritten;
+    private List<RitDTO>? ritten;
     private List<AutoListItem> autos = new();
     private List<GebruikerListItem> gebruikers = new();
 
@@ -107,12 +118,12 @@ else
     {
         ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
         autos = (await AutoRepo.GeefAlleAutosAsync()).ToList();
-        gebruikers = GebruikerRepo.GeefAlleGebruikers().ToList();
+        gebruikers = (await GebruikerRepo.GeefAlleGebruikersAsync()).ToList();
     }
 
     private async Task HandleValidSubmit()
     {
-        await RittenRepo.CreateRitAsync(nieuweRit);
+        await RittenRepo.MaakRitAsync(nieuweRit);
         ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
         nieuweRit = new(); // reset form
         StateHasChanged();
@@ -122,7 +133,7 @@ else
     {
         if (int.TryParse(e.Value?.ToString(), out int autoId))
         {
-            var auto = await AutoRepo.GeefAuto(autoId);
+            var auto = await AutoRepo.GeefAutoOpIdAsync(autoId);
             if (auto != null)
             {
                 nieuweRit.BeginKmStand = auto.kilometerstand;

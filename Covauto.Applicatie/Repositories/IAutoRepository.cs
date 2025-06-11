@@ -7,16 +7,15 @@ using Covauto.Applicatie.DTO.Auto;
 using Covauto.Domain.Entities;
 using Covauto.Shared.DTO.Auto;
 
-namespace Covauto.Applicatie.Interfaces
+namespace Covauto.Application.Repositories
 {
-    public interface IAutosRepository
+    public interface IAutoRepository
     {
         Task<IEnumerable<AutoListItem>> GeefAlleAutosAsync();
         Task<IEnumerable<AutoListItem>> ZoekAutosAsync(string naamAuto);
-        Task<FullAuto?> GeefAuto(int id);
+        Task<FullAuto?> GeefAutoOpIdAsync(int id);
         Task<int> CreateAutoAsync(CreateAuto auto);
         Task UpdateAutoAsync(int id, UpdateAuto auto);
         Task DeleteAutoAsync(int id);
-       
     }
 }
