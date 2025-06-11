@@ -1,8 +1,5 @@
 ﻿@page "/ritten"
-@using Microsoft.AspNetCore.Components.Forms
-@inject RittenRepository RittenRepo
-@inject AutosRepository.AutoRepository AutoRepo
-@inject GebruikersRepository GebruikerRepo
+@inject HttpClient Http
 
 <h3>Nieuwe Rit Toevoegen</h3>
 
@@ -10,54 +7,35 @@
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="mb-3">
-        <label for="auto">Auto:</label>
-        <select @bind="nieuweRit.AutoId" class="form-select" @onchange="LaadBeginKmStand">
-            <option value="">-- Kies een auto --</option>
-            @foreach (var auto in autos)
-            {
-                <option value="@auto.Id">@auto.naamAuto</option>
-            }
-        </select>
+    <div class="mb-2">
+        <InputText class="form-control" @bind-Value="nieuweRit.BeginAdres" placeholder="Beginadres" />
     </div>
 
-    <div class="mb-3">
-        <label for="gebruiker">Gebruiker:</label>
-        <select @bind="nieuweRit.GebruikerId" class="form-select">
-            <option value="">-- Kies een gebruiker --</option>
-            @foreach (var gebruiker in gebruikers)
-            {
-                <option value="@gebruiker.Id">@gebruiker.Naam</option>
-            }
-        </select>
+    <div class="mb-2">
+        <InputText class="form-control" @bind-Value="nieuweRit.EindAdres" placeholder="Eindadres" />
     </div>
 
-    <div class="mb-3">
-        <label>Beginadres:</label>
-        <InputText class="form-control" @bind-Value="nieuweRit.BeginAdres" />
+    <div class="mb-2">
+        <InputNumber class="form-control" @bind-Value="nieuweRit.BeginKmStand" placeholder="Begin Km" />
     </div>
 
-    <div class="mb-3">
-        <label>Eindadres:</label>
-        <InputText class="form-control" @bind-Value="nieuweRit.EindAdres" />
+    <div class="mb-2">
+        <InputNumber class="form-control" @bind-Value="nieuweRit.EindKmStand" placeholder="Eind Km" />
     </div>
 
-    <div class="mb-3">
-        <label>Beginkilometerstand:</label>
-        <InputText class="form-control" @bind-Value="nieuweRit.BeginKmStand" Disabled />
+    <div class="mb-2">
+        <InputDate class="form-control" @bind-Value="nieuweRit.Datum" />
     </div>
 
-    <div class="mb-3">
-        <label>Eindkilometerstand:</label>
-        <InputNumber class="form-control" @bind-Value="nieuweRit.EindKmStand" />
+    <div class="mb-2">
+        <InputNumber class="form-control" @bind-Value="nieuweRit.AutoId" placeholder="Auto ID" />
     </div>
 
-    <div class="mb-3">
-        <label>Datum:</label>
-        <InputDate @bind-Value="nieuweRit.Datum" class="form-control" />
+    <div class="mb-2">
+        <InputNumber class="form-control" @bind-Value="nieuweRit.GebruikerId" placeholder="Gebruiker ID" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Opslaan</button>
+    <button class="btn btn-primary">Toevoegen</button>
 </EditForm>
 
 <hr />
@@ -68,16 +46,20 @@
 {
     <p>Laden...</p>
 }
+else if (ritten.Count == 0)
+{
+    <p>Er zijn nog geen ritten.</p>
+}
 else
 {
     <table class="table">
         <thead>
             <tr>
-                <th>Auto</th>
-                <th>Gebruiker</th>
-                <th>BeginAdres</th>
-                <th>EindAdres</th>
-                <th>Kilometerstand</th>
+                <th>Auto ID</th>
+                <th>Gebruiker ID</th>
+                <th>Beginadres</th>
+                <th>Eindadres</th>
+                <th>Kilometers</th>
                 <th>Datum</th>
             </tr>
         </thead>
@@ -96,37 +78,48 @@ else
         </tbody>
     </table>
 }
-
 @code {
-    private CreateRit nieuweRit = new();
-    private List<RitListItem>? ritten;
-    private List<AutoListItem> autos = new();
-    private List<GebruikerListItem> gebruikers = new();
+    private CreateRitDto nieuweRit = new();
+    private List<RitListItemDto>? ritten;
 
     protected override async Task OnInitializedAsync()
     {
-        ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
-        autos = (await AutoRepo.GeefAlleAutosAsync()).ToList();
-        gebruikers = GebruikerRepo.GeefAlleGebruikers().ToList();
+        await LaadRitten();
     }
 
     private async Task HandleValidSubmit()
     {
-        await RittenRepo.CreateRitAsync(nieuweRit);
-        ritten = (await RittenRepo.GeefAlleRittenAsync()).ToList();
-        nieuweRit = new(); // reset form
-        StateHasChanged();
+        await Http.PostAsJsonAsync("https://localhost:7146/api/ritten", nieuweRit);
+        await LaadRitten();
+        nieuweRit = new(); // Reset formulier
     }
 
-    private async Task LaadBeginKmStand(ChangeEventArgs e)
+    private async Task LaadRitten()
     {
-        if (int.TryParse(e.Value?.ToString(), out int autoId))
-        {
-            var auto = await AutoRepo.GeefAuto(autoId);
-            if (auto != null)
-            {
-                nieuweRit.BeginKmStand = auto.kilometerstand;
-            }
-        }
+        ritten = await Http.GetFromJsonAsync<List<RitListItemDto>>("https://localhost:7146/api/ritten");
+    }
+
+    // DTO's (kun je ook importeren vanuit Covauto.Shared)
+    public class CreateRitDto
+    {
+        public int AutoId { get; set; }
+        public int GebruikerId { get; set; }
+        public string BeginAdres { get; set; } = "";
+        public string EindAdres { get; set; } = "";
+        public int BeginKmStand { get; set; }
+        public int EindKmStand { get; set; }
+        public DateTime Datum { get; set; }
+    }
+
+    public class RitListItemDto
+    {
+        public int Id { get; set; }
+        public int AutoId { get; set; }
+        public int GebruikerId { get; set; }
+        public string BeginAdres { get; set; } = "";
+        public string EindAdres { get; set; } = "";
+        public int BeginKmStand { get; set; }
+        public int EindKmStand { get; set; }
+        public DateTime Datum { get; set; }
     }
 }

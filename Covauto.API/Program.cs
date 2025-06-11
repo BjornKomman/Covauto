@@ -1,7 +1,6 @@
 using Covauto.Infrastructure;
-
 using Covauto.Domain;
-using Microsoft.IdentityModel.Configuration;
+
 namespace Covauto.API
 {
     public class Program
@@ -10,36 +9,49 @@ namespace Covauto.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.  
+            // 1. Voeg CORS toe zodat Blazor WebAssembly toegang heeft tot deze API
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowBlazorClient", policy =>
+                {
+                    policy.WithOrigins("https://localhost:7146") // <-- pas aan als je Blazor op andere poort draait
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
+            // 2. Voeg je services toe
             ServicesConfiguration.RegisterServices(
-     builder.Services,
-     builder.Configuration.GetConnectionString("DefaultConnection")
- );
+                builder.Services,
+                builder.Configuration.GetConnectionString("DefaultConnection")
+            );
 
+            // 3. Controllers en Swagger
             builder.Services.AddControllers();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle  
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.  
+            // 4. Gebruik CORS (moet vóór controllers)
+            app.UseCors("AllowBlazorClient");
+
+            // 5. Swagger alleen in development
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
+            // 6. Standaard middleware
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
 
+            // 7. Map routes naar controllers
             app.MapControllers();
 
+            // 8. Start app
             app.Run();
         }
-
-       
     }
 }
