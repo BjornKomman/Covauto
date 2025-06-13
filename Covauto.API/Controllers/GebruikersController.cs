@@ -5,38 +5,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Covauto.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class GebruikersController : ControllerBase
     {
-        private readonly IGebruikerService gebruikerService;
+        private readonly IGebruikerService _svc;
+        public GebruikersController(IGebruikerService svc) => _svc = svc;
 
-        public GebruikersController(IGebruikerService gebruikerService)
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateGebruiker dto)
         {
-            this.gebruikerService = gebruikerService;
+            var id = await _svc.MaakGebruikerAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id }, dto);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GeefGebruikers()
-        {
-            return Ok(await gebruikerService.GeefAlleGebruikersAsync());
-        }
-        [HttpGet("search/{naam}")]
-        public async Task<IActionResult> ZoekGebruikers(string naam)
-        {
-            return Ok(await gebruikerService.ZoekGebruikersAsync(naam));
-        }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GeefGebruiker(int id)
-        {
-            var retVal = await gebruikerService.GeefGebruikerByIdAsync(id);
-            return retVal != null ? Ok(retVal) : NotFound();
-        }
+        public Task<IEnumerable<GebruikerListItem>> GetAll()
+            => _svc.GeefAlleGebruikersAsync();
 
-        [HttpPost]
-        public async Task<IActionResult> MaakGebruiker(CreateGebruiker schrijver)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
         {
-            return Ok(await gebruikerService.MaakGebruikerAsync(schrijver));
+            var g = await _svc.GeefGebruikerByIdAsync(id);
+            return g is null ? NotFound() : Ok(g);
         }
     }
+
 }

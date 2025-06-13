@@ -8,35 +8,19 @@ namespace Covauto.Application.Services
 {
     public class GebruikerService : IGebruikerService
     {
-        private readonly IGebruikerRepository gebruikerRepository;
-        public GebruikerService(IGebruikerRepository gebruikerRepository)
-        {
-            this.gebruikerRepository = gebruikerRepository;
-        }
+        private readonly IGebruikerRepository _repo;
+        public GebruikerService(IGebruikerRepository repo) => _repo = repo;
 
-        public async Task<IEnumerable<GebruikerListItem>> GeefAlleGebruikersAsync()
-        {
-            return await gebruikerRepository.GeefAlleGebruikersAsync();
-        }
+        public Task<int> MaakGebruikerAsync(CreateGebruiker g)
+            => _repo.MaakGebruikerAsync(g);
 
-        public async Task<GebruikerListItem?> GeefGebruikerByIdAsync(int id)
-        {
-            return await gebruikerRepository.GeefGebruikerByIdAsync(id);
-        }
-
-        public async Task<int> MaakGebruikerAsync(CreateGebruiker gebruiker)
-        {
-            return await gebruikerRepository.MaakGebruikerAsync(gebruiker);
-        }
-
-        public async Task<IEnumerable<GebruikerListItem>> ZoekGebruikerAsync(string naam)
-        {
-            return await gebruikerRepository.ZoekGebruikersAsync(naam);
-        }
+        public Task<IEnumerable<GebruikerListItem>> GeefAlleGebruikersAsync()
+            => _repo.GeefAlleGebruikersAsync();
 
         public Task<IEnumerable<GebruikerListItem>> ZoekGebruikersAsync(string naam)
-        {
-            throw new NotImplementedException();
-        }
+            => _repo.ZoekGebruikersAsync(naam);
+
+        public Task<GebruikerListItem?> GeefGebruikerByIdAsync(int id)
+            => _repo.GeefGebruikerByIdAsync(id);
     }
 }

@@ -2,7 +2,8 @@ using Covauto.Infrastructure;
 using Covauto.Domain;
 using Covauto.Applicatie.Interfaces;
 using Covauto.Application.Services;
-using Covauto.Applicatie.Repositories; 
+using Covauto.Applicatie.Repositories;
+using Covauto.Infrastructure.Repositories;
 
 
 namespace Covauto.API
@@ -33,6 +34,8 @@ namespace Covauto.API
             builder.Services.AddScoped<IGebruikerService, GebruikerService>();
             builder.Services.AddScoped<IAutosRepository, AutosRepository>();
             builder.Services.AddScoped<IGebruikerRepository, GebruikersRepository>();
+           
+
             // 3. Controllers en Swagger
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
