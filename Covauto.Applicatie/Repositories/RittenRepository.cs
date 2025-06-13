@@ -3,63 +3,52 @@ using Covauto.Domain.Entities;
 using Covauto.Infrastructure.Data;
 using Covauto.Shared.DTO.Rit;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Covauto.Application.Repositories
 {
-
-namespace Covauto.Application.Repositories
+    public class RittenRepository : IRittenRepository
     {
-        public class RittenRepository : IRittenRepository
+        private readonly AutosContext _context;
+
+        public RittenRepository(AutosContext context)
         {
-            private readonly AutosContext _context;
+            _context = context;
+        }
 
-            public RittenRepository(AutosContext context)
+        public async Task<int> MaakRitAsync(CreateRit dto)
+        {
+            var rit = new Rit
             {
-                _context = context;
-            }
+                AutoId = dto.AutoId,
+                GebruikerId = dto.GebruikerId,
+                BeginAdres = dto.BeginAdres,
+                EindAdres = dto.EindAdres,
+                BeginKmStand = dto.BeginKmStand,
+                EindKmStand = dto.EindKmStand,
+                Datum = dto.Datum
+            };
 
-            public async Task<int> MaakRitAsync(CreateRit dto)
-            {
-                var rit = new Rit
+            _context.Ritten.Add(rit);
+            await _context.SaveChangesAsync();
+            return rit.Id;
+        }
+
+        public async Task<IEnumerable<RitDTO>> GeefAlleRittenAsync()
+        {
+            return await _context.Ritten
+                .Select(r => new RitDTO
                 {
-                    AutoId = dto.AutoId,
-                    GebruikerId = dto.GebruikerId,
-                    BeginAdres = dto.BeginAdres,
-                    EindAdres = dto.EindAdres,
-                    BeginKmStand = dto.BeginKmStand,
-                    EindKmStand = dto.EindKmStand,
-                    Datum = dto.Datum
-                };
-
-                // Fix: Ensure the DbSet<Rit> is defined in AutosContext  
-                _context.Set<Rit>().Add(rit);
-                await _context.SaveChangesAsync();
-                return rit.Id;
-            }
-
-            public async Task<IEnumerable<RitDTO>> GeefAlleRittenAsync()
-            {
-                return await _context.Set<Rit>()
-                    
-                    
-                    .Select(r => new RitDTO
-                    {
-                        Id = r.Id,
-                        BeginAdres = r.BeginAdres,
-                        EindAdres = r.EindAdres,
-                        BeginKmStand = r.BeginKmStand,
-                        EindKmStand = r.EindKmStand,
-                        Datum = r.Datum
-                    })
-                    .ToListAsync();
-            }
+                    Id = r.Id,
+                    BeginAdres = r.BeginAdres,
+                    EindAdres = r.EindAdres,
+                    BeginKmStand = r.BeginKmStand,
+                    EindKmStand = r.EindKmStand,
+                    Datum = r.Datum
+                })
+                .ToListAsync();
         }
     }
-
 }
-
