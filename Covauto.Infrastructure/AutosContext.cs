@@ -37,17 +37,16 @@ namespace Covauto.Infrastructure.Data
             modelBuilder.Entity<Auto>().HasData(new Auto
             {
                 Id = 1,
-                naamAuto = "BMW",
-                kilometerstand = 2023,
-                beschikbaarheid = true,
+                NaamAuto = "BMW",
+                Kilometerstand = 2023,
+                Beschikbaarheid = true,
             });
             modelBuilder.Entity<Auto>().HasData(new Auto
             {
                 Id = 2,
-                naamAuto = "BMW2",
-                kilometerstand = 2022223,
-
-                beschikbaarheid = true,
+                NaamAuto = "BMW2",
+                Kilometerstand = 2022223,
+                Beschikbaarheid = true,
             });
 
             modelBuilder.Entity<Rit>().HasData(new Rit

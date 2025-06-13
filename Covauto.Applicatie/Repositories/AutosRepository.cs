@@ -49,20 +49,15 @@ namespace Covauto.Applicatie.Repositories
             return MapAuto(auto);
         }
 
-        public async Task<int> CreateAutoAsync(CreateAuto auto)
+        public async Task<int> 
+            (CreateAuto auto)
         {
-            // Ensure the 'Gebruikers' DbSet exists in the AutosContext class.  
-            if (!await covautoContext.Set<Gebruiker>().AnyAsync(b => b.Id == auto.GebruikerId))
-            {
-                throw new Exception("Not a correct GebruikerId");
-            }
-
             var autoEnt = new Auto
             {
                 naamAuto = auto.naamAuto,
                 kilometerstand = auto.kilometerstand,
                 publicatieJaar = auto.publicatieJaar,
-                beschikbaarheid = auto.beschikbaarheid,
+                beschikbaarheid = auto.beschikbaarheid
             };
 
             await covautoContext.Autos.AddAsync(autoEnt);
@@ -76,11 +71,6 @@ namespace Covauto.Applicatie.Repositories
                 if (id != auto.Id)
                 {
                     throw new ValidationException("Ids are not corresponding");
-                }
-
-                if (!await covautoContext.Autos.AnyAsync(n => n.Id == auto.GebruikerId))
-                {
-                    throw new Exception("Not a correct GebruikerId");
                 }
 
                 Auto? autoEnt = await covautoContext.Autos.SingleOrDefaultAsync(n => n.Id == id);
