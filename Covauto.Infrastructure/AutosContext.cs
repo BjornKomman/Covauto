@@ -33,6 +33,7 @@ namespace Covauto.Infrastructure.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Gebruiker>().HasData(new Gebruiker { Id = 1, Naam = "Mark J. Prijs" });
             modelBuilder.Entity<Gebruiker>().HasData(new Gebruiker { Id = 2, Naam = "Joseph Albahari" });
+
             modelBuilder.Entity<Auto>().HasData(new Auto
             {
                 Id = 1,
