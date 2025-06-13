@@ -4,11 +4,11 @@ using Covauto.Domain.Entities;
 using Covauto.Shared.DTO.Gebruiker;
 using Microsoft.EntityFrameworkCore;
 using Covauto.Infrastructure.Data;
-
+using Covauto.Applicatie.Interfaces;
 
 namespace Covauto.Infrastructure
 {
-    public class GebruikersRepository
+    public class GebruikersRepository : IGebruikerRepository
     {
         private readonly AutosContext autosContext;
         private readonly DbSet<Gebruiker> gebruikerEntity;
@@ -103,6 +103,24 @@ namespace Covauto.Infrastructure
             };
         }
 
+        Task<int> IGebruikerRepository.MaakGebruikerAsync(CreateGebruiker gebruiker)
+        {
+            throw new NotImplementedException();
+        }
 
+        Task<IEnumerable<GebruikerListItem>> IGebruikerRepository.GeefAlleGebruikersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<GebruikerListItem>> IGebruikerRepository.ZoekGebruikersAsync(string naam)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<GebruikerListItem> IGebruikerRepository.GeefGebruikerByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

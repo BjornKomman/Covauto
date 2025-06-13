@@ -14,13 +14,11 @@ using Covauto.Infrastructure.Data;
 
 namespace Covauto.Applicatie.Repositories
 {
-    public class AutosRepository
-    {
-        public class AutoRepository : IAutosRepository
+        public class AutosRepository : IAutosRepository
         {
             private readonly AutosContext covautoContext;
 
-            public AutoRepository(AutosContext covautoContext)
+            public AutosRepository(AutosContext covautoContext)
             {
                 this.covautoContext = covautoContext;
             }
@@ -135,5 +133,4 @@ namespace Covauto.Applicatie.Repositories
                 };
             }
         }
-    }
 }
