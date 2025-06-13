@@ -29,6 +29,9 @@ namespace Covauto.API
                 builder.Services,
                 builder.Configuration.GetConnectionString("DefaultConnection")
             );
+            // Logging
+            builder.Logging.AddConsole();
+
             builder.Services.AddScoped<IAutoService, AutoService>();
             builder.Services.AddScoped<IGebruikerService, GebruikerService>();
             builder.Services.AddScoped<IAutosRepository, AutosRepository>();

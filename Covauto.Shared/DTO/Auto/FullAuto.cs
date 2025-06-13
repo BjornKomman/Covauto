@@ -23,19 +23,8 @@ namespace Covauto.Shared.DTO.Auto
         public int kilometerstand { get; set; }
 
         [Required]
-        [JsonPropertyName("startAdres")]
-        public string startAdres { get; set; }
-
-        [Required]
-        [JsonPropertyName("eindAdres")]
-        public string eindAdres { get; set; }
-
-        [Required]
         [JsonPropertyName("beschikbaarheid")]
         public bool beschikbaarheid { get; set; }
-
-        [JsonPropertyName("GebruikerId")]
-        public int GebruikerId { get; set; }
         public object Publicatiejaar { get; set; }
     }
 }
