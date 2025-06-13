@@ -16,7 +16,7 @@
     </div>
 
     <div class="mb-2">
-        <InputNumber class="form-control" @bind-Value="nieuweRit.BeginKmStand" placeholder="Begin Km" />
+        <InputNumber class="form-control" @bind-Value="nieuweRit.BeginKmStand" placeholder="Begin Km" disabled />
     </div>
 
     <div class="mb-2">
@@ -28,11 +28,23 @@
     </div>
 
     <div class="mb-2">
-        <InputNumber class="form-control" @bind-Value="nieuweRit.AutoId" placeholder="Auto ID" />
+        <select class="form-select" @bind="nieuweRit.AutoId">
+            <option value="">-- Kies een auto --</option>
+            @foreach (var auto in autos)
+            {
+                <option value="@auto.Id">@auto.Naam</option>
+            }
+        </select>
     </div>
 
     <div class="mb-2">
-        <InputNumber class="form-control" @bind-Value="nieuweRit.GebruikerId" placeholder="Gebruiker ID" />
+        <select class="form-select" @bind="nieuweRit.GebruikerId">
+            <option value="">-- Kies een gebruiker --</option>
+            @foreach (var gebruiker in gebruikers)
+            {
+                <option value="@gebruiker.Id">@gebruiker.Naam</option>
+            }
+        </select>
     </div>
 
     <button class="btn btn-primary">Toevoegen</button>
@@ -55,8 +67,8 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Auto ID</th>
-                <th>Gebruiker ID</th>
+                <th>Auto</th>
+                <th>Gebruiker</th>
                 <th>Beginadres</th>
                 <th>Eindadres</th>
                 <th>Kilometers</th>
@@ -78,20 +90,26 @@ else
         </tbody>
     </table>
 }
+
 @code {
     private CreateRitDto nieuweRit = new();
     private List<RitListItemDto>? ritten;
 
+    private List<AutoDto> autos = new();
+    private List<GebruikerDto> gebruikers = new();
+
     protected override async Task OnInitializedAsync()
     {
         await LaadRitten();
+        await LaadAutos();
+        await LaadGebruikers();
     }
 
     private async Task HandleValidSubmit()
     {
         await Http.PostAsJsonAsync("https://localhost:7146/api/ritten", nieuweRit);
         await LaadRitten();
-        nieuweRit = new(); // Reset formulier
+        nieuweRit = new();
     }
 
     private async Task LaadRitten()
@@ -99,7 +117,30 @@ else
         ritten = await Http.GetFromJsonAsync<List<RitListItemDto>>("https://localhost:7146/api/ritten");
     }
 
-    // DTO's (kun je ook importeren vanuit Covauto.Shared)
+    private async Task LaadAutos()
+    {
+        autos = await Http.GetFromJsonAsync<List<AutoDto>>("https://localhost:7146/api/autos");
+    }
+
+    private async Task LaadGebruikers()
+    {
+        gebruikers = await Http.GetFromJsonAsync<List<GebruikerDto>>("https://localhost:7146/api/gebruikers");
+    }
+
+    private async Task AutoGekozen(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int autoId))
+        {
+            nieuweRit.AutoId = autoId;
+            var auto = await Http.GetFromJsonAsync<AutoDto>($"https://localhost:7146/api/autos/{autoId}");
+            if (auto != null)
+            {
+                nieuweRit.BeginKmStand = auto.HuidigeKmStand;
+            }
+        }
+    }
+
+    // DTO's
     public class CreateRitDto
     {
         public int AutoId { get; set; }
@@ -108,7 +149,7 @@ else
         public string EindAdres { get; set; } = "";
         public int BeginKmStand { get; set; }
         public int EindKmStand { get; set; }
-        public DateTime Datum { get; set; }
+        public DateTime Datum { get; set; } = DateTime.Today;
     }
 
     public class RitListItemDto
@@ -121,5 +162,18 @@ else
         public int BeginKmStand { get; set; }
         public int EindKmStand { get; set; }
         public DateTime Datum { get; set; }
+    }
+
+    public class AutoDto
+    {
+        public int Id { get; set; }
+        public string Naam { get; set; } = "";
+        public int HuidigeKmStand { get; set; }
+    }
+
+    public class GebruikerDto
+    {
+        public int Id { get; set; }
+        public string Naam { get; set; } = "";
     }
 }
