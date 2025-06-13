@@ -17,7 +17,6 @@ namespace Covauto.Domain.Entities
         public int EindKmStand { get; set; }
         public DateTime Datum { get; set; } = DateTime.Now;
 
-        public Auto Auto { get; set; }
-        public Gebruiker Gebruiker { get; set; }
+
     }
 }

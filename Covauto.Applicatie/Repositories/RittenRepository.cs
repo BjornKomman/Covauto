@@ -36,21 +36,20 @@ namespace Covauto.Application.Repositories
                     Datum = dto.Datum
                 };
 
-                _context.Ritten.Add(rit);
+                // Fix: Ensure the DbSet<Rit> is defined in AutosContext  
+                _context.Set<Rit>().Add(rit);
                 await _context.SaveChangesAsync();
                 return rit.Id;
             }
 
             public async Task<IEnumerable<RitDTO>> GeefAlleRittenAsync()
             {
-                return await _context.Ritten
-                    .Include(r => r.Auto)
-                    .Include(r => r.Gebruiker)
+                return await _context.Set<Rit>()
+                    
+                    
                     .Select(r => new RitDTO
                     {
                         Id = r.Id,
-                        AutoNaam = r.Auto.naamAuto,
-                        GebruikerNaam = r.Gebruiker.Naam,
                         BeginAdres = r.BeginAdres,
                         EindAdres = r.EindAdres,
                         BeginKmStand = r.BeginKmStand,
@@ -63,4 +62,4 @@ namespace Covauto.Application.Repositories
     }
 
 }
-}
+

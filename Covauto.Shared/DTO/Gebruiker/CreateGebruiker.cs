@@ -11,6 +11,9 @@ namespace Covauto.Applicatie.DTO.Gebruiker
     public class CreateGebruiker
     {
         [Required]
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
+        [Required]
         [JsonPropertyName("naam")]
         public string Naam { get; set; }
     }

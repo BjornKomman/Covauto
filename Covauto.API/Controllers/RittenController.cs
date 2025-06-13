@@ -38,13 +38,9 @@ public class RittenController : ControllerBase
     public async Task<ActionResult<IEnumerable<RitDTO>>> GetRitten()
     {
         var ritten = await _context.Ritten
-            .Include(r => r.Auto)
-            .Include(r => r.Gebruiker)
             .Select(r => new RitDTO
             {
                 Id = r.Id,
-                AutoNaam = r.Auto.naamAuto,
-                GebruikerNaam = r.Gebruiker.Naam,
                 BeginAdres = r.BeginAdres,
                 EindAdres = r.EindAdres,
                 BeginKmStand = r.BeginKmStand,

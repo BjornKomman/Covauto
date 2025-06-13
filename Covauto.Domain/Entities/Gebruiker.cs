@@ -10,6 +10,6 @@ namespace Covauto.Domain.Entities
     {
         public int Id { get; set; }
         public string Naam { get; set; }
-        public virtual ICollection<Auto>? Autos { get; set; }
+      
     }
 }

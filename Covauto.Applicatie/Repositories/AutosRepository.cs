@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Covauto.Applicatie.Interfaces;
+﻿using Covauto.Applicatie.Interfaces;
 using Covauto.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -48,35 +43,34 @@ namespace Covauto.Applicatie.Repositories
                     }).ToListAsync();
             }
 
-            public async Task<FullAuto?> GeefAuto(int id)
+        public async Task<FullAuto?> GeefAuto(int id)
+        {
+            Auto? auto = await covautoContext.Autos.SingleOrDefaultAsync(n => n.Id == id);
+            return MapAuto(auto);
+        }
+
+        public async Task<int> CreateAutoAsync(CreateAuto auto)
+        {
+            // Ensure the 'Gebruikers' DbSet exists in the AutosContext class.  
+            if (!await covautoContext.Set<Gebruiker>().AnyAsync(b => b.Id == auto.GebruikerId))
             {
-                Auto? auto = await covautoContext.Autos.Include(a => a.GebruikerId).SingleOrDefaultAsync(n => n.Id == id);
-                return MapAuto(auto);
+                throw new Exception("Not a correct GebruikerId");
             }
 
-            public async Task<int> CreateAutoAsync(CreateAuto auto)
+            var autoEnt = new Auto
             {
-                if (!await covautoContext.Gebruikers.AnyAsync(b => b.Id == auto.GebruikerId))
-                {
-                    throw new Exception("Not a correct GebruikerId");
-                }
+                naamAuto = auto.naamAuto,
+                kilometerstand = auto.kilometerstand,
+                publicatieJaar = auto.publicatieJaar,
+                beschikbaarheid = auto.beschikbaarheid,
+            };
 
-                var autoEnt = new Auto
-                {
-                    naamAuto = auto.naamAuto,
-                    kilometerstand = auto.kilometerstand,
-                    publicatieJaar = auto.publicatieJaar,
-                    startAdres = auto.startAdres,
-                    eindAdres = auto.eindAdres,
-                    beschikbaarheid = auto.beschikbaarheid,
-                };
+            await covautoContext.Autos.AddAsync(autoEnt);
 
-                await covautoContext.Autos.AddAsync(autoEnt);
-
-                await covautoContext.SaveChangesAsync();
-                return autoEnt.Id;
-            }
-
+            await covautoContext.SaveChangesAsync();
+            return autoEnt.Id;
+        }
+       
             public async Task UpdateAutoAsync(int id, UpdateAuto auto)
             {
                 if (id != auto.Id)
@@ -114,8 +108,6 @@ namespace Covauto.Applicatie.Repositories
                 autoEnt.naamAuto = auto.naamAuto;
                 autoEnt.kilometerstand = auto.kilometerstand;
                 autoEnt.publicatieJaar = auto.publicatieJaar;
-                autoEnt.startAdres = auto.startAdres;
-                autoEnt.eindAdres = auto.eindAdres;
                 autoEnt.beschikbaarheid = auto.beschikbaarheid;
             }
 
@@ -127,8 +119,6 @@ namespace Covauto.Applicatie.Repositories
                     naamAuto = auto.naamAuto,
                     kilometerstand = auto.kilometerstand,
                     Publicatiejaar = auto.publicatieJaar,
-                    startAdres = auto.startAdres,
-                    eindAdres = auto.eindAdres,
                     beschikbaarheid = auto.beschikbaarheid,
                 };
             }

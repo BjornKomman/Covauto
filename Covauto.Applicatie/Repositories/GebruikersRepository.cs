@@ -80,14 +80,28 @@ namespace Covauto.Infrastructure
                 });
         }
 
-        /// <summary>
-        /// Geeft een schrijver inclusief de boeken van deze schrijver
-        /// </summary>
-        /// <param name="id">SchrijverId</param>
-        /// <returns></returns>
+        /// <summary>  
+        /// Geeft een gebruiker inclusief de auto's van deze gebruiker  
+        /// </summary>  
+        /// <param name="id">GebruikerId</param>  
+        /// <returns></returns>  
         public Gebruiker? GeefGebruikerById(int id)
         {
-            return MapGebruiker(autosContext.Gebruikers.Include(n => n.Autos).SingleOrDefault(n => n.Id == id));
+            // Assuming 'Gebruiker' does not have a direct property 'Autos',  
+            // you need to fetch related data from the 'Autos' DbSet.  
+            var gebruiker = autosContext.Gebruikers.SingleOrDefault(n => n.Id == id);
+            if (gebruiker == null)
+                return null;
+
+            //var autos = autosContext.Autos.Where(a => a.GebruikerId == id).ToList();
+
+            return new Gebruiker()
+            {
+                Id = gebruiker.Id,
+                Naam = gebruiker.Naam,
+                // Assuming you want to map the related 'Autos' data to a property in the returned object.  
+                //Autos = autos
+            };
         }
 
 
